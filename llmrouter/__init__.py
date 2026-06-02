@@ -1,6 +1,3 @@
-from importlib.metadata import PackageNotFoundError, version
+from .routers import BaseRouter, KNNRouter, MLPRouter, SVMRouter
 
-try:
-    __version__ = version("llmrouter")
-except PackageNotFoundError:  # pragma: no cover
-    __version__ = "0.1.0"
+__all__ = ["BaseRouter", "KNNRouter", "MLPRouter", "SVMRouter"]

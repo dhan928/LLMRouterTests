@@ -1,0 +1,11 @@
+LICENSE
+README.md
+pyproject.toml
+llmrouter/__init__.py
+llmrouter/routers.py
+llmrouter_three_router_demo.egg-info/PKG-INFO
+llmrouter_three_router_demo.egg-info/SOURCES.txt
+llmrouter_three_router_demo.egg-info/dependency_links.txt
+llmrouter_three_router_demo.egg-info/requires.txt
+llmrouter_three_router_demo.egg-info/top_level.txt
+tests/test_simple_routers.py

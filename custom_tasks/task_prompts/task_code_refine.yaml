@@ -1,4 +1,0 @@
-template: |
-  You are an expert code reviewer. Refine the following code to improve
-  readability, performance, and best practices. Follow Python PEP 8 guidelines.
-
