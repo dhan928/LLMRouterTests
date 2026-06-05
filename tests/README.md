@@ -1,26 +1,16 @@
 # Test Guide
 
-This simplified repo only needs one focused test file:
+Run:
 
 ```powershell
 python -m pytest
 ```
 
-`pyproject.toml` points pytest at:
+The tests cover:
 
-```text
-tests/test_simple_routers.py
-```
+- training `KNNRouter`, `SVMRouter`, and `MLPRouter` on real text queries
+- routing a new plain-English query to `weak` or `strong`
+- calling the selected OpenRouter model through a fake client
+- rejecting route calls before the router is trained
 
-That file checks:
-
-- `KNNRouter.fit()` and `KNNRouter.route()`
-- `SVMRouter.fit()` and `SVMRouter.route()`
-- `MLPRouter.fit()` and `MLPRouter.route()`
-- the error raised when routing before fitting
-
-Install test dependencies first:
-
-```powershell
-python -m pip install -e ".[dev]"
-```
+The tests do not use your OpenRouter API key and do not spend credits.

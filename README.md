@@ -1,30 +1,61 @@
 # Simple LLM Router
 
-This is a barebones version with only three routers:
+This repo includes only three routers:
 
-- `KNNRouter`
-- `SVMRouter`
-- `MLPRouter`
+- `KNNRouter`: K-Nearest Neighbors based routing
+- `SVMRouter`: Support Vector Machine based routing
+- `MLPRouter`: Multi-Layer Perceptron based routing
 
-No other LLMRouter routing methods are imported, packaged, or supported here.
+Each router trains on example query text labeled as either `weak` or `strong`.
+When you pass a real query, the router embeds the text with TF-IDF, predicts
+`weak` or `strong`, and maps that choice to an OpenRouter model.
 
-Each router learns from query embeddings and the best model label for each query.
-At inference time, you pass a new query and its embedding, and the router returns
-the chosen model name.
-
-## Install
+## Setup
 
 ```powershell
 python -m pip install -e ".[dev]"
 ```
 
-## Run The Example
+Put your OpenRouter API key in `.env`:
 
-```powershell
-python examples/basic_usage.py
+```text
+OPENROUTER_API_KEY=your_key_here
+OPENROUTER_WEAK_MODEL=openai/gpt-4o-mini
+OPENROUTER_STRONG_MODEL=openai/gpt-4.1
+OPENROUTER_SITE_URL=http://localhost
+OPENROUTER_APP_NAME=LLMRouterTests
 ```
 
-The example trains all three routers on tiny toy embeddings and routes one query.
+The default weak/strong models can be changed in `.env`.
+
+## Route Without Calling The API
+
+```powershell
+python examples/basic_usage.py "Explain this Python traceback and suggest a fix."
+```
+
+This prints the decision from all three routers:
+
+```text
+knnrouter: strong -> openai/gpt-4.1
+svmrouter: strong -> openai/gpt-4.1
+mlprouter: strong -> openai/gpt-4.1
+```
+
+## Route And Call OpenRouter
+
+After adding your key to `.env`:
+
+```powershell
+python examples/basic_usage.py "Explain this Python traceback and suggest a fix." --call-api
+```
+
+Each router will:
+
+1. Train on the bundled weak/strong examples.
+2. Route your real query to `weak` or `strong`.
+3. Call the selected OpenRouter model.
+4. Print the model response.
 
 ## Run Tests
 
@@ -32,52 +63,24 @@ The example trains all three routers on tiny toy embeddings and routes one query
 python -m pytest
 ```
 
-The tests cover:
+The tests do not call OpenRouter. They use a fake client to verify the selected
+model would be sent to the API.
 
-- fitting KNN, SVM, and MLP routers
-- routing a new query embedding
-- rejecting route calls before training
+## How The Routers Decide
 
-## Router Parts
+Training examples labeled `weak` are simple tasks like greetings, summaries,
+and short factual questions.
 
-### KNN Router
+Training examples labeled `strong` are harder tasks like debugging, architecture,
+math reasoning, legal comparison, and complex codebase planning.
 
-`KNNRouter` uses nearest neighbors. It compares the new query embedding to the
-training embeddings and picks the model label used by the closest examples.
+The routers learn that split differently:
 
-Use it when you want a simple baseline that is easy to explain.
+- KNN compares your query to nearby training examples.
+- SVM learns a boundary between weak-style and strong-style queries.
+- MLP learns a small neural classifier over the text features.
 
-### SVM Router
+OpenRouter API reference used for the client:
 
-`SVMRouter` learns decision boundaries between model labels. With the default
-RBF kernel, it can separate curved regions in embedding space.
-
-Use it when your training data is modest and class boundaries matter.
-
-### MLP Router
-
-`MLPRouter` is a small neural classifier from scikit-learn. It learns nonlinear
-patterns from embeddings to model labels.
-
-Use it when you have enough examples for a learned classifier, but still want a
-small setup.
-
-## Minimal API
-
-```python
-from llmrouter import KNNRouter
-
-model_catalog = {
-    "fast-small": {"cost": "low"},
-    "strong-large": {"cost": "high"},
-}
-
-train_embeddings = [[0.0, 0.1], [2.0, 2.1]]
-best_models = ["fast-small", "strong-large"]
-
-router = KNNRouter(model_catalog, n_neighbors=1)
-router.fit(train_embeddings, best_models)
-
-decision = router.route("hard question", [2.1, 2.0])
-print(decision.model_name)
-```
+- [Chat completions](https://openrouter.ai/docs/api-reference/chat-completion)
+- [Authentication](https://openrouter.ai/docs/api-keys)
