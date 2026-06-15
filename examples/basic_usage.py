@@ -46,20 +46,26 @@ def main() -> None:
     routers = build_routers()
     client = OpenRouterClient()
 
+    print(f"\n🔍 Query: '{args.query}'\n")
+    print("-" * 70)
+
     for name, router in routers.items():
         decision = router.route_text(args.query)
         openrouter_model = decision.model_info["openrouter_model"]
-        print(f"{name}: {decision.model_name} -> {openrouter_model}")
+        print(f"\n{name.upper()}:")
+        print(f"  Model selected: {decision.model_name}")
+        print(f"  OpenRouter: {openrouter_model}")
 
         if args.call_api:
+            print(f"  Calling OpenRouter...")
             result = router.answer(
                 args.query,
                 client,
                 temperature=args.temperature,
                 max_tokens=args.max_tokens,
             )
-            print(result.response)
-            print()
+            print(f"  Response:\n    {result.response}")
+        print()
 
 
 if __name__ == "__main__":
