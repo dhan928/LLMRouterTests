@@ -1,0 +1,8 @@
+Collecting vllm==0.6.3
+  Downloading vllm-0.6.3.tar.gz (2.7 MB)
+     ---------------------------------------- 2.7/2.7 MB 11.3 MB/s  0:00:00
+  Installing build dependencies: started
+  Installing build dependencies: still running...
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'error'
