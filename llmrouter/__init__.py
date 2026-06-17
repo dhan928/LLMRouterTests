@@ -1,7 +1,7 @@
 from .defaults import TRAINING_LABELS, TRAINING_QUERIES, default_model_catalog
 from .openrouter_client import OpenRouterClient, load_env
 from .routers import BaseRouter, KNNRouter, MLPRouter, SVMRouter, RouterManager, RouterType, RouteDecision, RouterResponse
-from .router_r1 import RouterR1, RouterR1Config, RouterR1Response, PromptPool, RouteService
+from .router_r1 import RouterR1, RouterR1Config, RouterR1Response, PromptPool, RoutePromptPool, RouteService
 
 __all__ = [
     # Base classes
@@ -21,6 +21,7 @@ __all__ = [
     "RouterR1Config",
     "RouterR1Response",
     "PromptPool",
+    "RoutePromptPool",
     "RouteService",
     
     # Client and utilities

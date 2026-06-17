@@ -1,0 +1,17 @@
+# Router-R1 configuration
+# API key is read from OPENROUTER_API_KEY in .env (leave api_key unset here)
+
+hparam:
+  backend: "api"
+  coordinator_mode: true                        # weak main model delegates to experts via <search>
+  model_id: "meta-llama/llama-3.2-3b-instruct"  # weak coordinator
+  route_models:                               # stronger models (round-robin per <search>)
+    - "anthropic/claude-3.5-haiku"
+    - "google/gemini-2.0-flash-001"
+    - "openai/gpt-4.1"
+  api_base: "https://openrouter.ai/api/v1"
+  max_iterations: 6
+  temperature: 1.0
+  max_tokens: 512
+  top_p: 1.0
+  gpu_memory_utilization: 0.85
